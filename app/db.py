@@ -3,7 +3,7 @@ import sqlite3
 from datetime import UTC, datetime
 from pathlib import Path
 
-SCHEMA_PATH = Path(__file__).resolve().parent.parent / "schema.sql"
+SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
 
 
 def utcnow() -> str:

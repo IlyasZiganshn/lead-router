@@ -12,7 +12,7 @@ from app.main import create_app  # noqa: E402
 
 @pytest.fixture()
 def client(tmp_path):
-    app = create_app(tmp_path / "test.db", ROOT / "rules.yaml")
+    app = create_app(tmp_path / "test.db", ROOT / "app" / "rules.yaml")
     with TestClient(app) as test_client:
         yield test_client
 

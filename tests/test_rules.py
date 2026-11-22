@@ -10,7 +10,7 @@ from app.rules import apply_rules, load_rules, matches  # noqa: E402
 
 
 def test_high_intent_rule_wins_for_corporate_email():
-    rules = load_rules(ROOT / "rules.yaml")
+    rules = load_rules(ROOT / "app" / "rules.yaml")
     score, status, rule = apply_rules(
         {"source": "site", "email": "i@company.com", "name": "Ilyas"}, rules
     )
@@ -18,7 +18,7 @@ def test_high_intent_rule_wins_for_corporate_email():
 
 
 def test_gmail_does_not_match_high_intent():
-    rules = load_rules(ROOT / "rules.yaml")
+    rules = load_rules(ROOT / "app" / "rules.yaml")
     score, status, rule = apply_rules(
         {"source": "site", "email": "i@gmail.com", "name": "Ilyas"}, rules
     )
@@ -26,7 +26,7 @@ def test_gmail_does_not_match_high_intent():
 
 
 def test_partner_rule_matches():
-    rules = load_rules(ROOT / "rules.yaml")
+    rules = load_rules(ROOT / "app" / "rules.yaml")
     score, status, rule = apply_rules(
         {"source": "partner", "email": "x@unknown.io"}, rules
     )
@@ -34,7 +34,7 @@ def test_partner_rule_matches():
 
 
 def test_email_domain_in_matches_second_rule():
-    rules = load_rules(ROOT / "rules.yaml")
+    rules = load_rules(ROOT / "app" / "rules.yaml")
     score, status, rule = apply_rules(
         {"source": "csv", "email": "x@corp.example"}, rules
     )

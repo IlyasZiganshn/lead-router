@@ -7,7 +7,6 @@ WORKDIR /app
 
 COPY pyproject.toml README.md ./
 COPY app ./app
-COPY schema.sql rules.yaml ./
 
 RUN pip install --no-cache-dir .
 
