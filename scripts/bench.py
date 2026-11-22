@@ -1,4 +1,4 @@
-"""Seed 10k leads and report read and insert latency.
+"""Seed 10k leads three times and report insert and read latency.
 
 Run from the repo root:
     python scripts/bench.py
@@ -18,6 +18,7 @@ from app import db  # noqa: E402
 
 ROWS = 10_000
 READS = 300
+RUNS = 3
 
 
 def percentile(values: list[float], pct: float) -> float:
@@ -26,7 +27,7 @@ def percentile(values: list[float], pct: float) -> float:
     return ordered[index]
 
 
-def main() -> None:
+def run_once() -> dict:
     with tempfile.TemporaryDirectory() as tmp:
         conn = db.connect(Path(tmp) / "bench.db")
         db.init_db(conn)
@@ -59,21 +60,48 @@ def main() -> None:
             db.list_leads(conn, status="hot", limit=50)
             filtered.append((time.perf_counter() - t0) * 1000)
 
-        print(
-            json.dumps(
-                {
-                    "rows": ROWS,
-                    "insert_seconds": round(insert_seconds, 2),
-                    "insert_per_row_us": round(insert_seconds / ROWS * 1_000_000, 1),
-                    "read_p50_ms": round(statistics.median(reads), 3),
-                    "read_p95_ms": round(percentile(reads, 95), 3),
-                    "filtered_read_p50_ms": round(statistics.median(filtered), 3),
-                    "filtered_read_p95_ms": round(percentile(filtered, 95), 3),
-                },
-                indent=2,
-            )
-        )
+        result = {
+            "insert_seconds": insert_seconds,
+            "read_p50_ms": statistics.median(reads),
+            "read_p95_ms": percentile(reads, 95),
+            "filtered_read_p50_ms": statistics.median(filtered),
+            "filtered_read_p95_ms": percentile(filtered, 95),
+        }
         conn.close()
+        return result
+
+
+def summarize_runs(runs: list[dict]) -> dict:
+    def median(key: str) -> float:
+        return statistics.median(run[key] for run in runs)
+
+    def low(key: str) -> float:
+        return min(run[key] for run in runs)
+
+    def high(key: str) -> float:
+        return max(run[key] for run in runs)
+
+    return {
+        "rows": ROWS,
+        "runs": len(runs),
+        "insert_seconds_median": round(median("insert_seconds"), 2),
+        "insert_seconds_min": round(low("insert_seconds"), 2),
+        "insert_seconds_max": round(high("insert_seconds"), 2),
+        "insert_per_row_us_median": round(median("insert_seconds") / ROWS * 1_000_000, 1),
+        "read_p50_ms_median": round(median("read_p50_ms"), 3),
+        "read_p95_ms_median": round(median("read_p95_ms"), 3),
+        "read_p95_ms_min": round(low("read_p95_ms"), 3),
+        "read_p95_ms_max": round(high("read_p95_ms"), 3),
+        "filtered_read_p50_ms_median": round(median("filtered_read_p50_ms"), 3),
+        "filtered_read_p95_ms_median": round(median("filtered_read_p95_ms"), 3),
+        "filtered_read_p95_ms_min": round(low("filtered_read_p95_ms"), 3),
+        "filtered_read_p95_ms_max": round(high("filtered_read_p95_ms"), 3),
+    }
+
+
+def main() -> None:
+    runs = [run_once() for _ in range(RUNS)]
+    print(json.dumps(summarize_runs(runs), indent=2))
 
 
 if __name__ == "__main__":

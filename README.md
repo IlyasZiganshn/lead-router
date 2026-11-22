@@ -41,16 +41,18 @@ This service fixes those three and nothing else. 586 lines of Python including t
 
 ## Benchmarks
 
-Measured with `python scripts/bench.py` on a Windows laptop, Python 3.13, SQLite 3.45, warm cache.
+Measured with `python scripts/bench.py` on a Windows laptop, Python 3.13, SQLite 3.45.
+The script seeds a temporary database three times and reports the median run.
 
 | Workload | Result |
 | --- | --- |
-| Insert 10 000 leads in one transaction | 0.59 s total, 59 µs per row |
-| `GET /leads?limit=50`, 10 000 rows | p50 0.39 ms, p95 0.71 ms |
-| Filtered by status, 10 000 rows | p50 0.39 ms, p95 0.70 ms |
+| Insert 10 000 leads in one transaction | 0.19 s total, 19 µs per row |
+| `GET /leads?limit=50`, 10 000 rows | p50 0.14 ms, p95 0.20 ms (worst run 0.29 ms) |
+| Filtered by status, 10 000 rows | p50 0.14 ms, p95 0.18 ms (worst run 0.20 ms) |
 | 5 repeated imports of the same CSV | 1 row, 0 duplicates |
 
-The script seeds a temporary database and prints JSON. The numbers above are not estimates.
+The numbers above are not estimates. Absolute latency depends on the machine, so the script
+prints minimum, median and maximum across runs instead of a single sample.
 
 ## Data model
 
@@ -80,7 +82,7 @@ erDiagram
 
 ## Routing rules
 
-Rules live in `rules.yaml`, not in code:
+Rules live in `app/rules.yaml`, not in code:
 
 ```yaml
 rules:
