@@ -1,0 +1,21 @@
+rules:
+  - name: high_intent
+    when:
+      source: site
+      email_domain_not: gmail.com
+    score: 80
+    status: hot
+
+  - name: partner
+    when:
+      source: partner
+    score: 60
+    status: warm
+
+  - name: enterprise_domain
+    when:
+      email_domain_in:
+        - company.com
+        - corp.example
+    score: 70
+    status: hot
