@@ -2,7 +2,7 @@
 
 Small FastAPI service for lead intake. Idempotent writes, CSV import, YAML routing rules, SQLite, tests.
 
-![CI](https://github.com/Pinger1456/lead-router/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/IlyasZiganshn/lead-router/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
 ![Tests: 28](https://img.shields.io/badge/tests-28-green)
@@ -107,7 +107,7 @@ docker compose up --build
 From source:
 
 ```bash
-git clone https://github.com/Pinger1456/lead-router
+git clone https://github.com/IlyasZiganshn/lead-router
 cd lead-router
 uv sync
 uv run uvicorn app.main:app --reload
@@ -143,7 +143,7 @@ uv run pytest -q
 
 ## Roadmap
 
-See [open issues](https://github.com/Pinger1456/lead-router/issues): Postgres migration, API key auth, async CSV import.
+See [open issues](https://github.com/IlyasZiganshn/lead-router/issues): Postgres migration, API key auth, async CSV import.
 
 ## License
 
