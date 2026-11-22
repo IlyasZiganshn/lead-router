@@ -25,3 +25,19 @@ jobs:
 
       - name: Test
         run: pytest -q
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install from the repository, not editable
+        run: pip install .
+
+      - name: Import the installed package outside the repository
+        working-directory: /tmp
+        run: python -c "from app.main import create_app; app = create_app(); print(f'{app.title}: {len(app.routes)} routes')"
