@@ -40,4 +40,4 @@ jobs:
 
       - name: Import the installed package outside the repository
         working-directory: /tmp
-        run: python -c "from app.main import create_app; app = create_app(); print(f'{app.title}: {len(app.routes)} routes')"
+        run: python -c "from app.main import create_app; print(create_app().title, len(create_app().routes))"
